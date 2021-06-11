@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>논리연산자</title>
+</head>
+
+<body>
+    <script>
+        alert(null || 2 || undefined);//2출력
+        alert(alert(1) || 2 || alert(3));//1출력 2출력
+        alert(1 && null && 2);//null 출력
+        alert(alert(1) && alert(2)); //1출력 undefined출력
+        alert(null || 2 && 3 || 4); //3출력
+
+        let age = 30;
+        if (age >= 14 && age <= 90) alert(age);
+
+        if (!(age < 14 || age > 90)) alert(age);
+
+        if (-1 || 0) alert("first"); //출력됨
+        if (-1 && 0) alert("second"); //출력안됨
+        if (null || -1 && 1) alert("third"); //출력됨
+
+        let userId = prompt(`Who's there ? `);
+        if (!userId) {
+            alert(`취소되었습니다.`);
+        } else if (userId !== "Admin") {
+            alert("알수 없는 아이디입니다.");
+        } else {
+            let userPassword = prompt(`Password ? `);
+            if (!userPassword) {
+                alert(`취소되었습니다.`);
+            } else if (userPassword !== "TheMaster") {
+                alert("잘못된 패스워드입니다.");
+            } else {
+                alert("환영합니다 관리자님 !!");
+            }
+        }
+    </script>
+</body>
+
+</html>
