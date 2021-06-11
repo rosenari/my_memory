@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>변수와 상수</title>
+</head>
+
+<body>
+    <fieldset>
+        <legend>1. 변수 가지고 놀기</legend>
+        <p>
+            1) admin과 name이라는 변수를 선언하세요
+        </p>
+        <p>
+            2) name에 값으로 "John"을 할당해 보세요
+        </p>
+        <p>
+            3) name의 값을 admin에 복사해보세요
+        </p>
+        <p>
+            4) admin의 값을 alert 창에 띄워보세요. "John"이 출력되어야 합니다
+        </p>
+    </fieldset>
+    <fieldset>
+        <legend>2. 올바른 이름 선택하기</legend>
+        <p>
+            1) 현재 우리가 살고있는 행성(planet)의 이름을 값으로 가진 변수를 만들어보세요. 변수 이름은 어떻게 지어야 할까요?
+        </p>
+        <p>
+            2) 웹사이트를 개발 중이라고 가정하고, 현재 접속 중인 사용자(user)의 이름(name)을 저장하는 변수를 만들어보세요. 변수 이름은 어떻게 지어야 할까요?
+        </p>
+    </fieldset>
+    <fieldset>
+        <legend>3. 대문자 상수 올바로 사용하기</legend>
+        <p>아래의 상수 중 어떤 것을 대문자로 고쳐야 할까요 ?</p>
+        <pre>
+            const birthday = '1992-10-14';
+            const age = getAge(birthday);
+        </pre>
+    </fieldset>
+    <script>
+        //1번
+        let admin, name;
+        name = "John";
+        admin = name;
+        alert(admin);
+        //2번
+        let ourPlanetName = "earth";
+        let currentUserName = "limjangsoon";
+        //3번
+        const BIRTHDAY = '1992-10-14';
+        const age = getAge(BIRTHDAY);
+        console.log(age);
+
+        function getAge(birthday) {
+            let today = new Date();
+            birthday = new Date(birthday);
+            return today.getFullYear() - birthday.getFullYear() + 1;
+        }
+    </script>
+</body>
+
+</html>

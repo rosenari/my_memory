@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>alert confirm prompt</title>
+</head>
+
+<body>
+    <p>
+        사용자에게 이름을 물어보고, 입력받은 이름을 그대로 출력해주는 페이지를 만들어보세요.
+    </p>
+    <script defer>
+        let name = prompt("What is your name ?");
+        if (name) {
+            let resultElem = document.querySelector("body");
+            let nameElem = document.createElement("p");
+            nameElem.innerText = `당신의 이름은 ${name}입니다.`
+            resultElem.append(nameElem);
+        }
+    </script>
+</body>
+
+</html>
