@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>switch문</title>
+</head>
+
+<body>
+    <script>
+        let browser = 'Chrome';
+        if (browser == 'Edge') {
+            alert('Edge를 사용하고 계시네요.');
+        } else if (browser == 'Chrome' || browser == 'Firefox' || browser == 'Safari' || browser == 'Opera') {
+            alert('지희 서비스가 지원하는 브라우저를 사용하고 계시네요 !');
+        } else {
+            alert('현재 페이지가 괜찮아 보이길 바랍니다 !');
+        }
+
+        let a = +prompt('a?', '');
+
+        switch (a) {
+            case 0:
+                alert(0);
+                break;
+            case 1:
+                alert(1);
+                break;
+            case 2:
+            case 3:
+                alert('2,3');
+                break;
+        }
+    </script>
+</body>
+
+</html>
