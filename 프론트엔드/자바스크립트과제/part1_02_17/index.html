@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>화살표 함수 기본</title>
+</head>
+
+<body>
+    <script>
+        function ask(question, yes, no) {
+            if (confirm(question)) yes()
+            else no()
+        }
+
+        ask("동의하십니까 ?",
+            () => alert('동의하셨습니다.'),
+            () => alert('취소버튼을 누르셨습니다.')
+        );
+    </script>
+</body>
+
+</html>
