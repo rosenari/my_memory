@@ -34,5 +34,58 @@
 })();
 
 (function () {
+    //동의어 사용하지 말자!
+    function displayMessage() {
 
+    }
+
+    function showName() {
+
+    }
+    //위 두개 함수모두 무언가 보여주는 함수인데
+    //show와 display 두개의 동사로 표현하였다. 적절치못함.
 })();
+
+(function () {
+    //매개변수 재사용 금지
+    function ninjaFunction(elem) {
+        elem = elem.toString(2);
+        //전달된 변수가 변조되면 과연 좋을까 ?
+        //차라리 아래처럼 새로 만들자
+        let elemBinary = elem.toString(2);
+    }
+})();
+
+(function () {
+    //이유없이 언더스코어를 쓰지말자.
+    let _name;//언더스코어를 쓰면 뭐가 좋을ㄲ ㅏ?
+    let __value;
+})();
+
+(function () {
+    //과장형용사는 쓰지말자
+    let superElement;
+    let megaFrame;
+    let niceItem;
+    //위처럼 절대 쓰지마라.
+})();
+
+(function () {
+    //외부변수를 덮어쓰지마라
+    let user;
+
+    function render() {
+        let user;
+        //..코드..
+        //함수영역에서 user변수를 외부변수로 착각하게 될수 있다.
+    }
+})();
+
+(function () {
+    //본래 함수 기능에 추가적인 기능을 추가하지말자.
+    function isReady() {
+        //체크만해서 true,false만 리턴하면되는데
+        //alert을 띄운다거나하는 행위를 할 필요가없다.
+        return true;
+    }
+});
