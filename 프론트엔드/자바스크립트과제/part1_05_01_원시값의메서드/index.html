@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>원시값의 메서드</title>
+</head>
+
+<body>
+    <script>
+        let str = "Hello";
+
+        str.test = 5; //비엄격모드에서는 래퍼객체에 test프로퍼티가 추가됨
+        //허나 래퍼객체는 바로 파괴된다.
+
+        console.log(str.test);
+        //str.test 참조시 새로운 래퍼객체를 생성하므로 test 프로퍼티를 찾을 수 없다.
+    </script>
+</body>
+
+</html>
