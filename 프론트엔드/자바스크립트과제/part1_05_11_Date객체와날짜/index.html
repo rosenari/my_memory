@@ -1,0 +1,110 @@
+<script>
+    (function () {
+        let date_120220 = new Date(2012, 1, 20, 3, 12);
+        console.log(date_120220);
+    })();
+
+    (function () {
+        let date = new Date(2012, 0, 3);  // 2012년 1월 3일
+        console.log(getWeekDay(date));        // "TU"가 출력되어야 합니다.
+
+        function getWeekDay(date) {
+            let week = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
+
+            return week[date.getDay()];
+        }
+    })();
+
+    (function () {
+        let date = new Date(2019, 11, 5);  // 2019년 11월 5일
+        console.log(getLocalDay(date));       // 금요일이므로, 5가 출력되어야 함
+
+        function getLocalDay(date) {
+            let day = date.getDay();
+            return day == 0 ? 7 : day;
+        }
+    })();
+
+    (function () {
+        let date = new Date(2015, 0, 2); // 2015년 1월 2일
+
+        console.log(getDateAgo(date, 1)); // 1, (2015년 1월 1일)
+        console.log(getDateAgo(date, 2)); // 31, (2014년 12월 31일)
+        console.log(getDateAgo(date, 365)); // 2, (2014년 1월 2일)
+
+        function getDateAgo(date, day) {
+            let tempDate = new Date(date.getTime());
+            tempDate.setDate(date.getDate() - day);
+            return tempDate.getDate();
+        }
+    })();
+
+    (function () {
+        function getLastDayOfMonth(year, month) {
+            return new Date(year, month + 1, 0).getDate();
+        }
+
+        console.log(getLastDayOfMonth(2012, 1));//29
+    })();
+
+    (function () {
+        function getSecondsToday() {
+            let currentTime = new Date();
+            let startTime = new Date(currentTime.getFullYear()
+                , currentTime.getMonth()
+                , currentTime.getDate());
+            return Math.round((currentTime.getTime() - startTime.getTime()) / 1000);
+        }
+
+        console.log(getSecondsToday());
+    })();
+
+    (function () {
+        function getSecondsToTomorrow() {
+            let currentTime = new Date();
+            let lastTime = new Date(currentTime.getFullYear()
+                , currentTime.getMonth()
+                , currentTime.getDate() + 1);
+
+            return Math.round((lastTime.getTime() - currentTime.getTime()) / 1000);
+        }
+
+        console.log(getSecondsToTomorrow());
+    })();
+
+    (function () {
+        function formatDate(date) {
+            let currentTime = new Date();
+            let diff = Math.floor((currentTime - date) / 1000);
+
+            if (diff < 1) {
+                return "현재";
+            }
+
+            if (diff <= 60) {
+                return diff + "초 전";
+            }
+
+            if (diff < 3600) {
+                return (diff / 60) + "분 전";
+            }
+
+            let resultDate = [currentTime.getDate(), currentTime.getMonth() + 1, currentTime.getFullYear()];
+            let resultTime = [currentTime.getHours(), currentTime.getMinutes()];
+
+            resultDate = resultDate.map(d => ('0' + d).slice(-2));
+            resultTime = resultTime.map(t => ('0' + t).slice(-2));
+
+            return resultDate.join('.') + " " + resultTime.join(":");
+        }
+
+        console.log(formatDate(new Date(new Date - 1))); // "현재"
+
+        console.log(formatDate(new Date(new Date - 30 * 1000))); // "30초 전"
+
+        console.log(formatDate(new Date(new Date - 5 * 60 * 1000))); // "5분 전"
+
+        // 어제를 나타내는 날짜를 "일.월.연 시:분" 포맷으로 출력
+        console.log(formatDate(new Date(new Date - 86400 * 1000)));
+    })();
+</script>
