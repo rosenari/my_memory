@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>call,apply와 데코레이터,포워딩</title>
+</head>
+
+<body>
+
+    <script>
+        {
+            /*
+            function spy(func) {
+                return function f() {
+                    if (!f.calls) f.calls = [];
+
+                    f.calls.push(Array.from(arguments));
+
+                    return func.apply(this, arguments);
+                }
+            }
+
+            function work(a, b) {
+                alert(a + b); // work is an arbitrary function or method
+            }
+
+            work = spy(work);
+
+            work(1, 2); // 3
+            work(4, 5); // 9
+
+            for (let args of work.calls) {
+                console.log('call:' + args.join()); // "call:1,2", "call:4,5"
+            }
+            */
+        }
+
+        {
+            /*
+            디바운스 구현
+            window._ = {};
+
+            _.debounce = function (func, time) {
+                let id;
+
+                return function (x) {
+                    if (id) clearTimeout(id);
+
+                    id = setTimeout(() => {
+                        func(x);
+                    }, time);
+                }
+            }
+
+            let f = _.debounce(alert, 1000);
+
+            f("a");
+            setTimeout(() => f("b"), 200);
+            setTimeout(() => f("c"), 500);
+            */
+        }
+
+        {
+            function throttle(func, time) {
+                let id;
+                return function (x) {
+                    if (id) {
+                        return;
+                    }
+
+                    func(x);
+
+                    id = setTimeout(() => {
+                        id = null;
+                    }, 1000);
+                }
+            }
+
+            function f(a) {
+                console.log(a);
+            }
+
+            // f1000 passes calls to f at maximum once per 1000 ms
+            let f1000 = throttle(f, 1000);
+
+            f1000(1); // shows 1
+            f1000(2); // (throttling, 1000ms not out yet)
+            f1000(3); // (throttling, 1000ms not out yet)
+            setTimeout(() => {
+                f1000(4);
+            }, 1000);
+
+            // when 1000 ms time out...
+            // ...outputs 3, intermediate value 2 was ignored
+        }
+    </script>
+</body>
+
+</html>
