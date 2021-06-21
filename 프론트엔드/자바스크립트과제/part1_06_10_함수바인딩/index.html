@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>함수 바인딩</title>
+</head>
+
+<body>
+    <script>
+        {/*
+            function sayHi() {
+                alert(this.name);
+            }
+
+            sayHi.test = 5;
+
+            let bound = sayHi.bind({
+                name: "John"
+            });//bind를 적용하면 또다른 객체가 반환됨, 새로운 객체에 test프로퍼티는 없음
+
+            alert(bound.test);//undefined
+        */}
+
+        {
+            /*
+            function askPassword(ok, fail) {
+                let password = prompt("비밀번호를 입력해주세요.", '');
+                if (password == "rockstar") ok();
+                else fail();
+            }
+
+            let user = {
+                name: 'John',
+
+                loginOk() {
+                    alert(`${this.name}님이 로그인하였습니다.`);
+                },
+
+                loginFail() {
+                    alert(`${this.name}님이 로그인에 실패하였습니다.`);
+                },
+
+            };
+
+            askPassword(user.loginOk.bind(user), user.loginFail.bind(user));
+            */
+        }
+
+        {
+            function askPassword(ok, fail) {
+                let password = prompt("비밀번호를 입력해주세요.", '');
+                if (password == "rockstar2") ok();
+                else fail();
+            }
+
+            let user = {
+                name: 'John',
+
+                login(result) {
+                    alert(this.name + (result ? ' 로그인 성공' : ' 로그인 실패'));
+                }
+            };
+
+            askPassword(user.login.bind(user, true), user.login.bind(user, false));
+        }
+    </script>
+</body>
+
+</html>
