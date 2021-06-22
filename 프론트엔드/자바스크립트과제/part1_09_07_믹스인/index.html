@@ -1,0 +1,49 @@
+<script>
+    {
+        //믹스인은 특정 메서드를 제공하는데, 단독으로 쓰이지 않고, 다른 클래스에
+        //해당 메서드를 더해줄때 사용되는 클래스이다.
+
+        //이벤트 믹스인 : 이벤트관련 메서드를 제공(이벤트 리슨,이벤트 트리거,이벤트 리슨 제거)
+
+        let eventMixin = {
+            on(eventName, handler) {
+                if (!this._eventHandlers) this._eventHandlers = {}
+                if (!this._eventHandlers[eventName]) this._eventHandlers[eventName] = [];
+
+                this._eventHandlers[eventName].push(handler);
+            },
+
+            off(eventName, handler) {
+                //옵셔널 체이닝은 노드js 14버전부터 사용 가능하다.
+                let handlers = this._eventHandlers?.[eventName];
+                if (!handlers) return;
+                for (let i = 0; i < handlers.length; i++) {
+                    if (handlers[i] === handler) {
+                        handlers.splice(i--, 1);
+                    }
+                }
+            },
+
+            trigger(eventName, ...args) {
+                if (!this._eventHandlers?.[eventName]) return;
+
+                this._eventHandlers[eventName].forEach(handler => {
+                    handler.apply(this, args);
+                });
+            }
+        }
+
+        class Menu {
+            choose(value) {
+                this.trigger("select", value);
+            }
+        }
+
+        Object.assign(Menu.prototype, eventMixin);
+
+        let menu = new Menu();
+        menu.on("select", value => console.log(`선택된 값 : ${value}`));
+
+        menu.choose("감자튀김");
+    }
+</script>
