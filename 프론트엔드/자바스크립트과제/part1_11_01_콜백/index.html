@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>콜백</title>
+    <style>
+        .circle {
+            transition-property: width, height, margin-left, margin-top;
+            transition-duration: 2s;
+            position: fixed;
+            transform: translateX(-50%) translateY(-50%);
+            background-color: red;
+            border-radius: 50%;
+        }
+
+        .message-ball {
+            line-height: 200px;
+            font-size: 2.0em;
+            color: white;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <button onclick="showCircle(150,150,100,div => {
+        div.classList.add('message-ball');
+        div.append('안녕하세요!'); 
+    })">원 나와라 !</button>
+    <div id="circle"></div>
+    <script>
+        function showCircle(cx, cy, radius, callback) {
+            let div = document.createElement('div');
+            div.classList.add('circle');
+            div.style = `left:${cx}px;top:${cy}px;width:0px;height:0px`;
+            circle.innerHTML = '';
+            circle.append(div);
+
+            setTimeout(() => {
+                div.style.width = radius * 2 + 'px';
+                div.style.height = radius * 2 + 'px';
+            }, 0);
+
+            div.addEventListener('transitionend', function func() {
+                div.removeEventListener('transitionend', func);
+                callback(div);
+            });
+        }
+    </script>
+</body>
+
+</html>
