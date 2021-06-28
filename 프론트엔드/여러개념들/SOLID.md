@@ -15,7 +15,7 @@ SOLID 원칙들은 결합도를 낮추고, 응집력을 높이는 데 사용되�
 - 인터페이스 분리 원칙 (ISP : Interface Segregation Principle)
 - 의존성 역전 원칙 (DIP : Dependency Inversion Principle)
 
-### 단일 책임 원칙
+### 단일 책임 원칙 (SRP)
 
 단일 클래스(하나의 클래스)는 오직 한 가지 일에만 책임이 있어야 합니다.
 하나의 클래스에 한가지 이상의 책임이 있다면 당신이 클래스를 수정해야할 이유가 한가지 이상이 됩니다.
@@ -47,3 +47,232 @@ class AnimalDB{
 > 두가지 책임을 Animal과 AnimalDB클래스로 분리하여 독립시킨다.
 > 클래스를 분리시킴으로써 결합도는 낮아지고, 응집력은 높아진다.
 
+### 개방 폐쇄 원칙 (OCP)
+
+소프트웨어 엔티티(클래스,모듈,함수)는 확장을 위해 열려있어야하며, 수정시에는 폐쇄적이어야한다는 원칙이다.
+쉽게말하면 기존 소스코드를 수정하지 않고도 모듈의 기능을 확장 할 수 있도록 잘 설계해야한다는 말이다.
+
+```typescript
+class Animal {
+    constructor(name: string){ }
+    getAnimalName() { }
+}
+
+//...
+
+const animals: Array<Animal> = [
+    new Animal('lion'),
+    new Animal('mouse')
+];
+
+function AnimalSound(a: Array<Animal>){
+    for(let i = 0; i<= a.length;i++){
+        if(a[i].name == 'lion')
+            return 'roar';
+        if(a[i].name == 'mouse')
+            return 'squeak';
+    }
+}
+AnimalSound(animals);
+```
+
+> 위 코드는 OCP를 위반한 코드이다. AnimalSound 함수를 보게되면 lion과 mouse 이름속성에 대해서만 처리가가능하다.
+> 새로운 동물 이름속성이 나타나면 AnimalSound에 분기문을 추가함으로써 함수를 계속 수정해야하는 문제가 생긴다.
+
+```typescript
+class Animal{
+    makeSound();
+    //..
+}
+
+class Lion extends Animal{
+    makeSound(){
+        return 'roar';
+    }
+}
+
+class Squirrel extends Animal{
+    makeSound(){
+        return 'squeak';
+    }
+}
+
+class Snake extends Animal {
+    makeSound(){
+        return 'hiss';
+    }
+}
+
+//..
+function AnimalSound(a: Array<Animal>){
+    for(let i = 0;i<=a.length;i++){
+        a[i].makeSound();
+    }
+}
+```
+
+> 위와 같이 다형성을 활용해 코드를 설계하면 동물이 계속 추가되어도 AnimalSound함수의 수정이 필요가 없다. 즉 확장에 유리해진다.
+
+### 리스코프 치환 원칙 (LSP)
+
+하위 클래스는 반드시 상위클래스를 대체 가능 해야한다는 원칙이다.
+즉 부모 클래스로 생성된 객체에서 가능한 행위는 자식클래스로 치환해도 일관되게 수행가능해야합니다.
+LSP는 두가지의 예제를 가지고 설명을 해보도록 하겠습니다.
+
+```javascript
+class Bag{
+    constructor(){
+        this.price = 0;
+    }
+
+    setPrice(price){
+        this.price = price;
+    }
+
+    getPrice(){
+        return this.price;
+    }
+}
+
+class DiscountedBag extends Bag{
+    constructor(){
+        super();
+        this.discountedRate = 1;
+    }
+
+    setDiscounted(discountedRate){
+        this.discountedRate = discountedRate;
+    }
+
+    setPrice(price){
+        super.setPrice(price - (this.discountedRate * price));
+    }
+}
+
+const bag = new Bag();
+bag.setPrice(10000);
+const discountedbag = new DiscountedBag();
+discountedbag.setPrice(10000);
+console.log(bag.getPrice());
+console.log(discountedbag.getPrice());
+```
+
+> 위 코드는 LSP 원칙을 위반합니다. setPrice가 오버라이딩 되면서 기존 부모클래스의 setPrice의 동작의 일관성을 지키지 못했기때문입니다.
+> setPrice는 인자로 받은 값을 price로 설정해야하나 강제적으로 할인율이 적용되면서 일관성을 헤치게 되었습니다.
+> 부모클래스가 자식클래스로 대체되면 동작은 변화됩니다.
+
+LSP 원칙을 지키도록 DiscountedBad 클래스를 변경해보겠습니다.
+
+```javascript
+//...
+class DiscountedBag extends Bag{
+    constructor(){
+        super();
+        this.discountedRate = 1;
+    }
+
+    setDiscounted(discountedRate){
+        this.discountedRate = discountedRate;
+    }
+
+    applyDiscount(price){
+        super.setPrice(price - (this.discountedRate * price));
+    }
+}
+//...
+```
+
+> 위처럼 하면 setPrice의 행위를 일관되게 유지하면서 할인율을 적용할 수 있습니다.
+> 위 처럼 설계하면 부모클래스를 자식클래스가 대체할 수 있으며, 일관되게 동작합니다.
+
+예제를 하나 더 보겠습니다. 정사각형과 직사각형 예제인데요.
+
+```javascript
+class Rectangle{
+    constructor(){
+        this.width = 0;
+        this.height = 0;
+    }
+
+    setWidth(width){
+        this.width = width;
+    }
+
+    setHeight(height){
+        this.height = height;
+    }
+
+    getArea(){
+        return this.width * this.height;
+    }
+}
+
+class Square extends Rectangle{
+    setWidth(width){
+        this.width = width;
+        this.height = width;
+    }
+
+    setHeight(height){
+        this.width = height;
+        this.height = height;
+    }
+}
+
+function getRectanglesArea(rect){
+    return rect.getArea();
+}
+
+let rect = new Rectangle();
+rect.setWidth(10);
+rect.setHeight(20);
+let square = new Square();
+square.setWidth(10);
+square.setHeight(20);
+
+console.log(getRectanglesArea(rect)); //200
+console.log(getRectanglesArea(square)); //400
+```
+
+> 위 코드는 LSP 원칙을 위배하였습니다. setWidth와 setHeight의 일관성을 헤치면서 직사각형 클래스로 생성한 객체를 정사각형으로 치환하는 순간 getArea의 결과값이 달라집니다. 즉 일관성이 무너집니다.
+
+LSP 원칙을 지키려면 정사각형과 직사각형의 부모자식관계를 뒤바꾸면 되긴한다.
+
+```javascript
+class Square{
+    constructor(){
+        this.width = 0;
+        this.height = 0;
+    }
+
+    setLength(len){
+        this.width = len;
+        this.height = len;
+    }
+
+    getArea(){
+        return this.width * this.height;
+    }
+}
+
+class Rectangle extends Square{
+    constructor(){
+        this.width = 0;
+        this.height = 0;
+    }
+
+    setWidth(width){
+        this.width = width;
+    }
+
+    setHeight(height){
+        this.height = height;
+    }
+}
+
+function getRectanglesArea(rect){
+    return rect.getArea();
+}
+```
+
+> 이렇게하면 정사각형으로 만든 객체를 직사각형 클래스로 치환해도 동일하게 동작한다.
