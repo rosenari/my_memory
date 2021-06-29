@@ -345,3 +345,83 @@ class 복합기구현체 implements 복사기,프린터,팩스기{
 
 > ISP원칙을 적용하니 결합도가 낮아지고 응집도가 올라갔다.
 
+### 의존성 역전 원칙(DIP)
+
+구체적인 것(클래스)이 추상적인 것(인터페이스)에 의존해야 한다는 원칙이다.(인터페이스 작성시 클래스를 기반하여 작성하는 전통적인 방법을 역전시키라는 말로 보임..)
+구체적인 것이 덜 구체적인 것에 의존해야한다. 다르게 말하면 변하기 쉬운 것에 의존하면 안된다.
+이러한 원칙을 예제로 표현해 보도록하겠다.
+
+```typescript
+interface Weapon{
+    attack(): void;
+}
+
+class Sword implements Weapon{
+    attack(){
+        console.log('쉬잉!!');
+    }
+}
+
+class Axe implements Weapon{
+    attack(){
+        console.log('쿵!!');
+    }
+}
+
+class Person{
+    sword: Sword;
+
+    setWeapon(Sword sword){
+        this.sword = sword;
+    }
+
+    attack(){
+        weapon.attack();
+    }
+}
+
+const person = new Person();
+person.setWeapon(new Sword());
+```
+
+> 위 코드는 Weapon이 아닌 Sword타입을 setWeapon의 매개변수 타입을 지정함으로써 Sword무기만을 셋팅할 수 있다. 결합도가 높아지는 문제가 생긴다.. 위 코드를 좋게 작성하려면 어떻게 해야할까?
+
+setWeapon메서드의 인자의 타입으로 Sword같은 클래스(구체적인것)보다는 인터페이스(추상적인)에 의존하는 것이 확장성에 좋다.
+
+코드를 다시 작성해보자..
+
+```typescript
+interface Weapon{
+    attack(): void;
+}
+
+class Sword implements Weapon{
+    attack(){
+        console.log('쉬잉!!');
+    }
+}
+
+class Axe implements Weapon{
+    attack(){
+        console.log('쿵!!');
+    }
+}
+
+class Person{
+    weapon: Weapon;
+
+    setWeapon(Weapon weapon){
+        this.weapon = weapon;
+    }
+
+    attack(){
+        weapon.attack();
+    }
+}
+
+const person = new Person();
+person.setWeapon(new Sword());
+person.setWeapon(new Axe());
+```
+
+> setWeapon메서드가 Weapon 타입에 의존하게 함으로써 Sword와 Axe 모두 셋팅 가능하게 되었다. Good
