@@ -2,6 +2,7 @@
 
 - docker-build-step
 - Docker
+- Docker Pipeline
 - Amazon ECR
 - AWS Global Configuration
 - Slack Notification
