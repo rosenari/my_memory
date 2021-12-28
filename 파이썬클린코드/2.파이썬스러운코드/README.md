@@ -169,3 +169,104 @@ with contextlib.suppress(DataConversionException): # DataConversionException이 
     parse_data(input_json_or_dict)
 ```
 
+###### 파이썬에서의 접근제어자
+
+- 다른언어들에서는 private,protected,public과 같은 접근제어자가 있다. 하지만 파이썬의 모든 함수와 프로퍼티는 기본적으로 public이다.
+- private의 경우 관용적으로 `_`를 앞에 붙여 사용한다. (`__` 밑줄 두개는 다른 이름을 만들어내기때문에 유의하자.)
+
+```python
+class Connector:
+     def __init__(self, source):
+         self.source = source;
+         self._timeout = 60 # private
+```
+
+###### 프로퍼티
+
+- `@property`와 `@{property명}.setter` 데코레이터를 통해 쿼리(읽기), 명령(쓰기) 프로퍼티를 선언할 수 있다.
+
+```python
+import re
+
+EMAIL_FORMAT = re.compile(r"[^@]+@[^@]+[^@]+")
+
+def is_valid_email(potentially_vaild_email: str):
+    return re.match(EMAIL_FORMAT, potentially_vaild_email) is not None
+
+class User:
+    def __init__(self, username):
+        self.username = username
+        self._email = None
+    
+    @property
+    def email(self):
+        return self._email
+    
+    @email.setter
+    def email(self, new_email):
+        if not is_valid_email(new_email):
+            raise ValueError(f"유효한 이메일이 아니므로 {new_email}값을 사용할 수 없음")
+        self._email = new_email
+```
+
+> 명령, 쿼리 분리 원칙에 따라 하나의 작업만을 수행하도록 하는 것이 적절하다.
+
+###### 반복가능한 객체
+
+- 파이썬에서는 반복가능한 객체를 자체적으로 만들 수 있다.
+- 반복가능한 객체로는 시퀀스, 이터러블, 이터레이터가 있다
+- 이터러블은 `__iter__`를 구현한 객체, 이터레이터는 `__next__`를 구현한 객체이다.
+- 이터러블은 이터레이터를 반환한다.
+
+```python
+from datetime import timedelta
+
+class DateRangeIterable:
+    """ 자체 이터레이터 메서드를 가지고 있는 이터러블 """
+   
+    def __init__(self, start_date, end_date):
+        self.start_date = start_date
+        self.end_date = end_date
+        self._present_day = start_date
+        
+    def __iter__(self):
+        return self
+        
+    def __next__(self):
+        if self._present_day >= self.end_date:
+            raise StopIteration
+        today = self._present_day
+        self._present_day += timedelta(days=1)
+        return today
+```
+
+```python
+for day in DateRangeIterable(date(2019, 1, 1), date(2019, 1, 5)):
+    print(day)
+```
+
+> - for in 을 통해 반복을 수행하려 하면 `__iter__` 메서드가 호출되고, `__iter__` 메서드에서 반환된 이터레이터는 자기자신임을 나타낸다.
+> - 각 루프의 단계마다 next를 호출하며, 더이상 생산할것이 없으면, StopIteration 예외를 호출하여 반복을 중단한다.
+> - 이터레이터는 각 단계마다 데이터를 생성하기때문에, 메모리 효율이 좋다.
+
+- 위처럼 이터러블 객체를 만들면 문제가 하나있다.
+- self를 반환하기때문에 계속 동일한 객체를 참조해서 한번 호출해서 얻은 이터러블 객체가 끝에 다다르면, 더이상 반복을 할수가 없다는 것이다
+- 이러한 문제를 해결하기 위해 제너레이터(이터레이터를 생성하는 함수)를 사용할 수 있다.
+
+```python
+class DateRangeContainerIterable:
+    def __init__(self, start_date, end_date):
+        self.start_date = start_date
+        self.end_date = end_date
+        
+    def __iter__(self):
+        current_day = self.start_date
+        while current_day < self.end_date:
+            yield current_day
+            current_day += timedelta(days=1)
+```
+
+> - 위처럼 작성하면 이터러블 객체가 호출될때마다 새로운 이터레이터 객체를 반환한다.
+> - yield로 작성된 함수는 제너레이터 함수로 매번 새로운 이터레이터 객체를 반환한다.
+> - 위와같이 `__iter__`메서드를 통해 새로운 이터레이터 객체를 반환하는 객체를 컨테이너 이터러블 객체라 칭한다.
+
