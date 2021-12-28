@@ -270,3 +270,193 @@ class DateRangeContainerIterable:
 > - yield로 작성된 함수는 제너레이터 함수로 매번 새로운 이터레이터 객체를 반환한다.
 > - 위와같이 `__iter__`메서드를 통해 새로운 이터레이터 객체를 반환하는 객체를 컨테이너 이터러블 객체라 칭한다.
 
+###### 시퀀스 만들기
+
+- 이터러블 객체의 경우, 메모리를 효율적으로 사용할 수 있지만 n번째 값을 얻는데 걸리는 시간복잡도는 O(n) 이다.
+- 시퀀스 객체의 경우, 메모리를 효율적으로 사용하진 않지만, n번째 값을 얻는데 걸리는 시간복잡도는 O(1) 이다.
+
+```python
+class DataRangeSequence:
+    def __init__(self, start_date, end_date):
+        self.start_date = start_date
+        self.end_date = end_date
+        self._range = self._create_range()
+
+    def _create_range(self):
+        days = []
+        current_day = self.start_date
+        while current_day < self.end_date:
+            days.append(current_day)
+            current_day += timedelta(days=1)
+        return days
+
+    def __getitem__(self, day_no):
+        return self._range(day_no)
+
+    def __len__(self):
+        return len(self._range)
+```
+
+```python
+>>> s1 = DateRangeSequence(date(2019, 1, 1), date(2019, 1, 5))
+>>> for day in s1:
+...    print(day)
+...
+2019-01-01
+2019-01-02
+2019-01-03
+2019-01-04
+>>> s1[-1]
+datetime.date(2019, 1, 4)
+```
+> 모든 작업을 래핑된 리스트 객체에 위임하여 호환성과 일관성을 보장한다.
+
+###### 컨테이너 객체
+
+- `__contains__` 메서드를 구현한 객체를 컨테이너 객체라한다.
+- `__contains__` 메서드는 in을 만나면 호출되며 in 앞에 있는 값이 매개변수로 들어간다.
+- element in container == container.`__contains__(element)`
+
+```python
+def mark_coordinate(grid, coord):
+    if 0 <= coord.x < grid.width and 0 <= coord.y < grid.height:
+        grid[coord] = MARKED
+```
+
+> - 위 코드는 coord(좌표)가 grid의 영역안에 포함되면 grid의 coord에 마킹을 하는 함수이다.
+> - if문이 and로 묶여 난해하게 보인다.
+
+```python
+class Boundaries:
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+
+    def __contains__(self, coord):
+        x, y = coord
+        return 0 <= x < self.width and 0 <= y < self.height
+
+class Grid:
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+        self.limits = Boundaries(width, height)
+
+    def __contains__(self, coord):
+        return coord in self.limits
+
+def mark_coordinate(grid, coord):
+    if coord in grid:
+        grid[coord] = MARKED
+```
+
+> - 위 코드를 보면 경계라는 객체와 그리드라는 객체를 생성하였다.
+> - grid에게 coord가 영역안에 포함되는지 in을 통해 물어보고
+grid는 내부 경계객체에게 묻는 구조이다.
+> - 경계객체에게 coord가 경계에서 벗어나는지에 대해 확인하는 책임이 부여되어 있어 응집도가 굉장히 높다.
+
+###### 객체의 동적인 특성
+
+- `<myobject>`.`<myattribute>`를 호출하면 객체의 사전에서 myattribute 속성을 찾고 속성이 없는 경우, `__getattr__`을 myattribute라는 이름을 매개변수로 넘겨 호출한다.
+- `__getattr__`의 경우 속성을 처리할 수 없을때, AttributeError 예외를 발생시켜야한다.
+
+```python
+class DynamicAttribute:
+    def __init__(self, attribute):
+        self.attribute = attribute
+
+    def __getattr__(self, attr):
+        if attr.startwith("fallback_"):
+            name = attr.replace("fallback_", "")
+            return f"[fallback resolved] {name}"
+        raise Attribute(f"{self.__class__.__name__}에는 {attr} 속성이 없습니다.")
+```
+```python
+>>> dyn = DynamicAttribute("value")
+>>> dyn.attribute
+'value'
+>>> dyn.fallback_test
+'[fallback resolved] fallback_test'
+>>> dyn.__dict__["fallback_new"] = "new value"
+>>> dyn.fallback_new
+'new value'
+>>> getattr(dyn, "something", "default") # getattr의 경우 AttributeError 예외가 발생하면 기본값을 반환
+'default'
+```
+
+###### 호출형 객체
+
+- `__call__`을 구현하여 함수처럼 동작하는 객체를 구현할 수 있다.
+- 파이썬은 object(*args, **kwarg) => object.`__call__(*args, **kwarg)`로 변환한다.
+
+```python
+from collections import defaultdict
+
+class CallCount:
+    def __init__(self):
+        self._counts = defaultdict(int)
+
+    def __call__(self, argument):
+        self._counts[argument] += 1
+        return self._counts[argument]
+```
+
+```python
+>>> cc = CallCount()
+>>> cc(1)
+1
+>>> cc(2)
+1
+>>> cc(1)
+2
+>>> cc(1)
+3
+>>> cc("something")
+1
+```
+
+###### 변경가능한 객체를 함수의 매개변수 기본값으로 사용해서는 안된다.
+
+```python
+def wrong_user_display(user_metadata: dict = {"name": "John", "age": 30}):
+    name = user_metadata.pop("name")
+    age = user_metadata.pop("age")
+    return f"{name} ({age})"
+```
+```python
+>>> wrong_user_display()
+'John (30)'
+>>> wrong_user_display({"name": "Jane", "age": 25})
+'Jane (25)'
+>>> wrong_user_display()
+...
+KeyError: 'name'
+```
+
+> - 매개변수 기본값의 변경가능한 `객체는 최초 함수 호출시  한번 생성`되어 메모리에 계속 남아있으며, 다음 호출시 user_metadata는 해당 객체를 가르킨다.
+> - 매개변수가 없는 경우 이미 모든 key pop된 객체를 다시 참조하게 되기때문에 KeyError가 발생한다.
+
+###### 내장타입 확장
+
+- 리스트, 문자열, 사전과 같은 내장 타입을 확장하기 위해서는 collections 모듈을 활용하자.
+- 직접 list를 확장하지말고, collections.UserList로 확장을 진행해야한다.
+
+```python
+class GoodList(UserList):
+    def __getitem__(self, index):
+        value = super().__getitem__(index)
+        if index % 2 == 0:
+            prefix = "짝수"
+        else
+            prefix = "홀수"
+        return f"[{prefix}] {value}"
+```
+```python
+>>> gl = GoodList((0,1,2))
+>>> gl[0]
+'[짝수] 0'
+>>> gl[1]
+'[홀수] 1'
+>>> ";".join(gl)
+'[짝수] 0; [홀수] 1; [짝수] 2
+```
