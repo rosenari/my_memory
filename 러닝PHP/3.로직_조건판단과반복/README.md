@@ -125,11 +125,7 @@ while($i <= 5) {
 }
 ```
 ```html
-<div>1</div>
-<div>2</div>
-<div>3</div>
-<div>4</div>
-<div>5</div>
+<div>1</div><div>2</div><div>3</div><div>4</div><div>5</div>
 ```
 
 ```php
@@ -138,11 +134,7 @@ for($i = 1; $i <= 5; $i++){
 }
 ```
 ```html
-<div>1</div>
-<div>2</div>
-<div>3</div>
-<div>4</div>
-<div>5</div>
+<div>1</div><div>2</div><div>3</div><div>4</div><div>5</div>
 ```
 
 ```php
@@ -151,11 +143,7 @@ for($i = 2, $j = 3; $i <= 10, $j <= 15; $i += 2, $j += 3){
 }
 ```
 ```html
-<div>2 , 3</div>
-<div>4 , 6</div>
-<div>6 , 9</div>
-<div>8 , 12</div>
-<div>10 , 15</div>
+<div>2 , 3</div><div>4 , 6</div><div>6 , 9</div><div>8 , 12</div><div>10 , 15</div>
 ```
 
 > - 하나의 for문에 초기화 표현식과 조건표현식, 순회표현식을 여러개 사용가능하다.
