@@ -1,0 +1,15 @@
+#### __str__ 메서드는 어떤 역할을 하는가 ?
+
+- <span style="color:white">str함수 호출시 \_\_str\_\_메서드를 가진 객체를 인자로 넘기면, \_\_str\_\_ 메서드의 리턴 문자열이 반환된다. </span>
+- <span style="color:white">print함수는 인자들을 str화 하여 출력하는 특징이 있다.</span>
+
+#### __repr__ 메서드는 어떤 역할을 하는가 ?
+- <span style="color:white">repr 함수 호출시 \_\_repr\_\_메서드를 가진 객체를 인자로 넘기면 \_\_repr\_\_의 리턴값이 반환된다.</span>
+
+#### __str__과 __repr__의 공통점은 ?
+- <span style="color:white">두 메서드는 객체를 평문으로 반환한다는 공통점이 있다.</span>
+
+#### __str__과 __repr__의 차이점은 ?
+- <span style="color:white">\_\_str\_\_의 목적은 인자를 문자열화하여 반환하는 것이다. 평문 문자는 다른 데이터 타입이 상호작용하는 좋은 인터페이스가 된다.
+- <span style="color:white">\_\_repr\_\_의 목적은 객체를 인간이 이해할 수 있는 평문으로 표현하는 것에 있다.</span>
+- <span style="color:white">\_\_str\_\_은 객체를 평문화(다른 데이터 타입간의 인터페이스) 하는 것에 방점이 있으나, \_\_repr\_\_은 객체를 표현하는 것에 방점이 있다.</span>
